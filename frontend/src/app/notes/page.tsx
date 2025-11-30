@@ -6,79 +6,26 @@ import { Search, Plus, Hash, Sparkles, Brain, ArrowRight } from "lucide-react";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useAI } from "@/hooks/use-ai";
-
-type Note = {
-    id: string;
-    title: string;
-    content: string;
-    tags: string[];
-    date: string;
-};
-
-const MOCK_NOTES: Note[] = [
-    {
-        id: "1",
-        title: "Project Phoenix Ideas",
-        content: "Key features for the new launch include AI integration and real-time collaboration...",
-        tags: ["project", "ideas", "urgent"],
-        date: "2h ago"
-    },
-    {
-        id: "2",
-        title: "Meeting Notes: Design Sync",
-        content: "Discussed the new color palette. Action items: Update global CSS variables...",
-        tags: ["meeting", "design"],
-        date: "5h ago"
-    },
-    {
-        id: "3",
-        title: "Book Recommendations",
-        content: "1. The Pragmatic Programmer\n2. Clean Code\n3. Designing Data-Intensive Applications",
-        tags: ["learning", "books"],
-        date: "1d ago"
-    },
-];
+import { noteService, Note } from "@/services/note-service";
 
 export default function NotesPage() {
     const [notes, setNotes] = useState<Note[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [newNote, setNewNote] = useState("");
-    const [isLoaded, setIsLoaded] = useState(false);
     const { extractKeywords, isReady } = useAI();
 
-    // Load notes from localStorage
+    // Load notes
     useEffect(() => {
-        const savedNotes = localStorage.getItem("orbit_notes");
-        if (savedNotes) {
-            setNotes(JSON.parse(savedNotes));
-        } else {
-            setNotes(MOCK_NOTES);
-        }
-        setIsLoaded(true);
+        setNotes(noteService.getAll());
     }, []);
-
-    // Save notes to localStorage
-    useEffect(() => {
-        if (isLoaded) {
-            localStorage.setItem("orbit_notes", JSON.stringify(notes));
-        }
-    }, [notes, isLoaded]);
 
     const addNote = async () => {
         if (!newNote.trim()) return;
 
         const tags = await extractKeywords(newNote);
+        const updatedNotes = noteService.add(newNote, tags);
 
-        setNotes([
-            {
-                id: Math.random().toString(),
-                title: "New Note",
-                content: newNote,
-                tags: tags,
-                date: "Just now"
-            },
-            ...notes,
-        ]);
+        setNotes(updatedNotes);
         setNewNote("");
     };
 

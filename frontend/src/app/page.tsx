@@ -25,12 +25,11 @@ export default function Home() {
               <span className="text-white">ORBIT</span>
             </Link>
             <nav className="hidden md:flex items-center gap-6 text-sm text-white/80">
-              <a href="#features" className="hover:text-white transition-colors">Features</a>
-              <a href="/tasks" className="hover:text-white transition-colors">Tasks</a>
-              <a href="/notes" className="hover:text-white transition-colors">Notes</a>
+              <Link href="/#features" className="hover:text-white transition-colors">Features</Link>
+              <Link href="/login" className="hover:text-white transition-colors">Login</Link>
             </nav>
             <Button asChild size="sm" className="bg-white text-black hover:bg-white/90">
-              <Link href="/tasks">
+              <Link href="/signup">
                 Get Started
               </Link>
             </Button>

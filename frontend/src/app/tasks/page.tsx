@@ -5,61 +5,27 @@ import { Input } from "@/components/ui/input";
 import { Plus, Calendar, Flag, CheckCircle2, Circle, ArrowLeft, Star } from "lucide-react";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-
-type Task = {
-    id: string;
-    title: string;
-    completed: boolean;
-    priority: "high" | "medium" | "low";
-    dueDate?: string;
-};
-
-const MOCK_TASKS: Task[] = [
-    { id: "1", title: "Review Q4 roadmap", completed: false, priority: "high", dueDate: "Today" },
-    { id: "2", title: "Email marketing team", completed: true, priority: "medium" },
-    { id: "3", title: "Update documentation", completed: false, priority: "low", dueDate: "Tomorrow" },
-];
+import { taskService, Task } from "@/services/task-service";
 
 export default function TasksPage() {
     const [tasks, setTasks] = useState<Task[]>([]);
     const [newTask, setNewTask] = useState("");
-    const [isLoaded, setIsLoaded] = useState(false);
 
-    // Load tasks from localStorage
+    // Load tasks
     useEffect(() => {
-        const savedTasks = localStorage.getItem("orbit_tasks");
-        if (savedTasks) {
-            setTasks(JSON.parse(savedTasks));
-        } else {
-            setTasks(MOCK_TASKS);
-        }
-        setIsLoaded(true);
+        setTasks(taskService.getAll());
     }, []);
-
-    // Save tasks to localStorage
-    useEffect(() => {
-        if (isLoaded) {
-            localStorage.setItem("orbit_tasks", JSON.stringify(tasks));
-        }
-    }, [tasks, isLoaded]);
 
     const addTask = () => {
         if (!newTask.trim()) return;
-        setTasks([
-            {
-                id: Math.random().toString(),
-                title: newTask,
-                completed: false,
-                priority: "medium",
-                dueDate: "Today"
-            },
-            ...tasks,
-        ]);
+        const updatedTasks = taskService.add(newTask);
+        setTasks(updatedTasks);
         setNewTask("");
     };
 
     const toggleTask = (id: string) => {
-        setTasks(tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t));
+        const updatedTasks = taskService.toggle(id);
+        setTasks(updatedTasks);
     };
 
     return (

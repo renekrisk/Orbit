@@ -8,6 +8,17 @@ ORBIT is a production-grade AI-powered personal productivity and knowledge syste
 - **AI Queries**: Ask questions about your notes and extract insights.
 - **Activity Timeline**: Track your productivity journey.
 
+## Gallery
+
+### Landing Page
+![Landing Page](screenshots/landing.png)
+
+### Smart Tasks
+![Tasks Page](screenshots/tasks.png)
+
+### Neural Notes
+![Notes Page](screenshots/notes.png)
+
 ## Architecture
 - **Frontend**: Next.js 14, Tailwind CSS, TypeScript.
 - **Backend**: AWS Lambda, API Gateway, DynamoDB, Cognito.
